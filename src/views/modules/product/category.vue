@@ -67,6 +67,15 @@ export default {
     },
 
     remove(node, data) {
+      var catIds = [data.catId];
+      this.$http({
+        url: this.$http.adornUrl("/product/category/delete"),
+        method: "post",
+        data: this.$http.adornData(catIds, false),
+      }).then(({ data }) => {
+        console.log("删除成功");
+      });
+
       console.log(node);
       console.log(data);
     },
