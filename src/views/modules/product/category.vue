@@ -8,6 +8,9 @@
       :show-checkbox="true"
       node-key="catId"
       :default-expanded-keys="expandedKey"
+      :draggable="true"
+      :allow-drop="allowDrop"
+      @node-drop="handleDrop"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -68,6 +71,7 @@ export default {
   components: {},
   data() {
     return {
+      maxLevel: 0,
       titleName: "对话框标题",
       //对话框类型，add为新增，edit为编辑
       dialogType: "",
@@ -104,6 +108,47 @@ export default {
         console.log(data.data);
         this.menu = data.data;
       });
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      //draggingNode 被拖动的当前节点
+      //dropNode 目标节点
+      //type   [prev,inner,next]
+      console.log("allowDrop", draggingNode, dropNode, type);
+
+      //初始化maxLevel的值
+      this.maxLevel = 0;
+      //1、被拖动的节点以及目标父节点总层数不能大于3
+      //1）、计算被拖动的当前节点总层数
+      this.countNodeLevel(draggingNode.data);
+      let deep = this.maxLevel - draggingNode.data.catLevel + 1;
+      console.log("当前正在拖动节点的最大深度：", deep);
+      //往内部拖动时计算计算的是目标层级
+      if (type == "inner") {
+        return deep + dropNode.level <= 3;
+      }
+      //往前或往后拖计算的是父级
+      else {
+        return deep + dropNode.parent.level <= 3;
+      }
+    },
+    //计算被拖动的当前节点总层数（递归）
+    countNodeLevel(node) {
+      //找得到所有子节点，求出最大深度
+      if (node.children != null && node.children.length > 0) {
+        for (var i = 0; i < node.children.length; i++) {
+          if (node.children[i].catLevel > this.maxLevel) {
+            this.maxLevel = node.children[i].catLevel;
+          }
+          this.countNodeLevel(node.children[i]);
+        }
+      } else {
+        if (node.catLevel > this.maxLevel) {
+          this.maxLevel = node.catLevel;
+        }
+      }
+    },
+    handleDrop(draggingNode, dropNode, dropType, event) {
+      console.log("handleDrop：", draggingNode, dropNode, dropType);
     },
     append(data) {
       this.titleName = "新增分类";
