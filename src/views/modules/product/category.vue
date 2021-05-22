@@ -379,8 +379,4 @@
   };
 </script>
 <style scoped>
-</
-
-style
-
->
+</style>
