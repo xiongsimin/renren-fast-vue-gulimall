@@ -4,7 +4,7 @@
       <el-option
         v-for="item in brands"
         :key="item.brandId"
-        :label="item.name"
+        :label="item.brandName"
         :value="item.brandId"
       ></el-option>
     </el-select>
@@ -37,7 +37,7 @@
     //监控data中的数据变化
     watch: {
       brandId(val) {
-        this.PubSub.publish("brandId", val);
+        PubSub.publish("brandId", val);
       }
     },
     //方法集合
