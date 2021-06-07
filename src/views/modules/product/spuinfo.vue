@@ -98,7 +98,7 @@
         console.log(row);
         this.$router.push({
           path: "/product-attrupdate",
-          query: {spuId: row.id, catelogId: row.catelogId}
+          query: {spuId: row.id, catelogId: row.catalogId}
         });
       },
       // 获取数据列表
